@@ -75,4 +75,26 @@ public class BookControllerIntegrationTests {
         );
     }
 
+    @Test
+    public void testThatListBooksReturnsHttpStatus200() throws Exception {
+        mockMvc.perform(
+                MockMvcRequestBuilders.get("/books")
+        ).andExpect(
+                MockMvcResultMatchers.status().isOk()
+        );
+    }
+
+    @Test
+    public void testThatListBooksReturnsListOfBooks() throws Exception {
+        BookEntity book = TestDataUtil.createTestBookEntityA(null);
+        bookService.createBook(book.getIsbn(), book);
+        mockMvc.perform(
+                MockMvcRequestBuilders.get("/books")
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$[0].isbn").isString()
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$[0].title").isString()
+        );
+    }
+
 }

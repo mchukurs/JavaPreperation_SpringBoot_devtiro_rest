@@ -36,7 +36,7 @@ public class AuthorControllerIntegrationTests {
 
 
     @Autowired
-    public AuthorControllerIntegrationTests(MockMvc mockMvc,AuthorService authorService) {
+    public AuthorControllerIntegrationTests(MockMvc mockMvc, AuthorService authorService) {
         this.mockMvc = mockMvc;
         this.authorService = authorService;
         this.objectMapper = new ObjectMapper();
@@ -57,6 +57,7 @@ public class AuthorControllerIntegrationTests {
                 MockMvcResultMatchers.status().isCreated()
         );
     }
+
     @Test
     public void testThatCreateAuthorSuccessfullyReturnsSavedAuthor() throws Exception {
         AuthorDto testAuthorA = TestDataUtil.createTestAuthorDtoA();
@@ -76,4 +77,26 @@ public class AuthorControllerIntegrationTests {
         );
     }
 
+    @Test
+    public void testThatListAuthorsReturnsHttpStatus200() throws Exception {
+        mockMvc.perform(
+                MockMvcRequestBuilders.get("/authors")
+        ).andExpect(
+                MockMvcResultMatchers.status().isOk()
+        );
+    }
+
+    @Test
+    public void testThatListAuthorsReturnsListOfAuthors() throws Exception {
+        authorService.save(TestDataUtil.createTestAuthorEntityA());
+        mockMvc.perform(
+                MockMvcRequestBuilders.get("/authors")
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$[0].id").isNumber()
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$[0].name").isString()
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$[0].age").isNumber()
+        );
+    }
 }

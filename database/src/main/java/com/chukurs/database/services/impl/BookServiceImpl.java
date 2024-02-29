@@ -8,6 +8,10 @@ import com.chukurs.database.services.AuthorService;
 import com.chukurs.database.services.BookService;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
+
 @Service //makes it a bean
 public class BookServiceImpl implements BookService {
     private BookRepository bookRepository;
@@ -17,8 +21,17 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public BookEntity createBook(String isbn,BookEntity bookEntity) {
+    public BookEntity createBook(String isbn, BookEntity bookEntity) {
         bookEntity.setIsbn(isbn);
         return bookRepository.save(bookEntity);
+    }
+
+    @Override
+    public List<BookEntity> findAll() {
+        return StreamSupport.stream(bookRepository
+                                .findAll()
+                                .spliterator(),
+                        false)
+                .collect(Collectors.toList());
     }
 }
