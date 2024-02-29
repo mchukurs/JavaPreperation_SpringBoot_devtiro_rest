@@ -18,6 +18,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import javax.print.attribute.standard.Media;
+
 
 //this is running application test--> integration test
 //creates an instance of mock MVC for us, and places inside application context
@@ -97,6 +99,38 @@ public class AuthorControllerIntegrationTests {
                 MockMvcResultMatchers.jsonPath("$[0].name").isString()
         ).andExpect(
                 MockMvcResultMatchers.jsonPath("$[0].age").isNumber()
+        );
+    }
+
+    @Test
+    public void testThatGetAuthorReturns200WhenExists() throws Exception {
+        AuthorEntity testAuthorA = TestDataUtil.createTestAuthorEntityA();
+        authorService.save(testAuthorA);
+        mockMvc.perform(
+                MockMvcRequestBuilders.get("/authors/" + 1)
+        ).andExpect(
+                MockMvcResultMatchers.status().isOk()
+        );
+    }
+
+    @Test
+    public void testThatGetAuthorReturns404WhenDoesNotExist() throws Exception {
+        mockMvc.perform(
+                MockMvcRequestBuilders.get("/authors/" + 1)
+        ).andExpect(
+                MockMvcResultMatchers.status().isNotFound()
+        );
+    }
+
+    @Test
+    public void testThatGetAuthorReturnsAuthorWhenExists() throws Exception {
+        AuthorEntity testAuthorA = TestDataUtil.createTestAuthorEntityA();
+        authorService.save(testAuthorA);
+        mockMvc.perform(
+                MockMvcRequestBuilders.get("/authors/" + 1)
+                        .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.id").value(1L)
         );
     }
 }
