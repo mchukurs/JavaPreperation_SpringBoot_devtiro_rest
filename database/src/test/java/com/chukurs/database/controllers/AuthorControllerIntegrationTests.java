@@ -146,4 +146,17 @@ public class AuthorControllerIntegrationTests {
                 MockMvcResultMatchers.status().isNotFound()
         );
     }
+
+    @Test
+    public void testThatFullUpdateAuthorReturnsHttpStatus200WhenAuthorExists() throws Exception {
+        AuthorDto testAuthorDto = TestDataUtil.createTestAuthorDtoA();
+        String authorDtoJson = objectMapper.writeValueAsString(testAuthorDto);
+        mockMvc.perform(
+                MockMvcRequestBuilders.put("/authors/" + testAuthorDto.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(authorDtoJson)
+        ).andExpect(
+                MockMvcResultMatchers.status().isNotFound()
+        );
+    }
 }
