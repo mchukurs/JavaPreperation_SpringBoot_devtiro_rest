@@ -216,4 +216,16 @@ public class AuthorControllerIntegrationTests {
                 MockMvcResultMatchers.jsonPath("$.name").value("Testing Partial")
         ).andExpect(MockMvcResultMatchers.jsonPath("$.age").value(testAuthorDto.getAge()));
     }
+    @Test
+    public void testThatDeleteAuthorReturns204() throws Exception {
+        authorService.save(TestDataUtil.createTestAuthorEntityA());
+        AuthorDto testAuthorDto = TestDataUtil.createTestAuthorDtoA();
+        mockMvc.perform(
+                MockMvcRequestBuilders.delete("/authors/" + testAuthorDto.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(
+                MockMvcResultMatchers.status().isNoContent()
+        );
+    }
+
 }

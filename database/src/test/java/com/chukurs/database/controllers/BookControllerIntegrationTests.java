@@ -213,4 +213,17 @@ public class BookControllerIntegrationTests {
         );
     }
 
+    @Test
+    public void testThatDeleteBookReturns204() throws Exception {
+        BookEntity bookEntity = TestDataUtil.createTestBookEntityA(null);
+        bookService.createUpdateBook(bookEntity.getIsbn(), bookEntity);
+        BookDto testBookDto = TestDataUtil.createTestBookDtoA(null);
+        mockMvc.perform(
+                MockMvcRequestBuilders.delete("/books/" + testBookDto.getTitle())
+                        .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(
+                MockMvcResultMatchers.status().isNoContent()
+        );
+    }
+
 }
