@@ -1,6 +1,8 @@
 package com.chukurs.database.services;
 
 import com.chukurs.database.domain.entities.BookEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -19,4 +21,6 @@ public interface BookService {
     BookEntity partialUpdate(String isbn, BookEntity updatedBookEntity);
 
     void delete(String isbn);
+
+    Page<BookEntity> findAll(Pageable pageable);
 }
