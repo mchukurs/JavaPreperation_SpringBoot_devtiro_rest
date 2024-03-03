@@ -89,9 +89,9 @@ public class BookControllerIntegrationTests {
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/books")
         ).andExpect(
-                MockMvcResultMatchers.jsonPath("$[0].isbn").isString()
+                MockMvcResultMatchers.jsonPath("$.content.[0].isbn").isString()
         ).andExpect(
-                MockMvcResultMatchers.jsonPath("$[0].title").isString()
+                MockMvcResultMatchers.jsonPath("$.content.[0].title").isString()
         );
     }
 
