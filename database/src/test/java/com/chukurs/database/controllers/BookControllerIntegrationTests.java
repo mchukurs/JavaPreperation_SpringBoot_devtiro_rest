@@ -3,9 +3,7 @@ package com.chukurs.database.controllers;
 import com.chukurs.database.TestDataUtil;
 import com.chukurs.database.domain.dto.AuthorDto;
 import com.chukurs.database.domain.dto.BookDto;
-import com.chukurs.database.domain.entities.AuthorEntity;
 import com.chukurs.database.domain.entities.BookEntity;
-import com.chukurs.database.services.AuthorService;
 import com.chukurs.database.services.BookService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -171,6 +169,47 @@ public class BookControllerIntegrationTests {
                 MockMvcResultMatchers.jsonPath("$.isbn").value(testBookDtoA.getIsbn())
         ).andExpect(
                 MockMvcResultMatchers.jsonPath("$.title").value(testBookDtoA.getTitle())
+        );
+    }
+
+    @Test
+    public void testThatPartialUpdateBookReturnsHttpStatus200WhenBookExists() throws Exception {
+        //create book in database
+        BookEntity bookEntity = TestDataUtil.createTestBookEntityA(null);
+        bookService.createUpdateBook(bookEntity.getIsbn(), bookEntity);
+
+        BookDto testBookDto = TestDataUtil.createTestBookDtoA(null);
+        testBookDto.setTitle("Testing Partial book Title");
+        //convert to json, so can mimic request
+        String bookDtoJson = objectMapper.writeValueAsString(testBookDto);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.patch("/books/" + testBookDto.getIsbn())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(bookDtoJson)
+        ).andExpect(
+                MockMvcResultMatchers.status().isOk()
+        );
+    }
+
+    @Test
+    public void testThatPartialUpdateBookReturnsBookWhenBookExists() throws Exception {
+        //create book in database
+        BookEntity bookEntity = TestDataUtil.createTestBookEntityA(null);
+        bookService.createUpdateBook(bookEntity.getIsbn(), bookEntity);
+
+
+        BookDto testBookDto = TestDataUtil.createTestBookDtoA(null);
+        testBookDto.setTitle("Testing Partial book Title");
+        //convert to json, so can mimic request
+        String bookDtoJson = objectMapper.writeValueAsString(testBookDto);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.patch("/books/" + testBookDto.getIsbn())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(bookDtoJson)
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.title").value("Testing Partial book Title")
         );
     }
 
